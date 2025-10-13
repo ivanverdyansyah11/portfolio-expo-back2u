@@ -174,7 +174,7 @@ function Input({ label, ...props }: any) {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, backgroundColor: "#FFF" },
+    container: { padding: 20, backgroundColor: "#FFF" },
     title: { fontSize: 20, fontWeight: "bold", marginBottom: 20 },
 
     inputGroup: { marginBottom: 15 },
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     uploadText: { color: "#FFF", fontWeight: "bold" },
 
     buttonRow: { flexDirection: "row", justifyContent: "space-between", marginTop: 20 },
-    backButton: { flex: 1, padding: 14, backgroundColor: "#999", borderRadius: 8, marginRight: 8, alignItems: "center" },
+    backButton: { padding: 14, backgroundColor: "#999", borderRadius: 8, marginRight: 8, alignItems: "center" },
     backText: { color: "#FFF", fontWeight: "bold" },
     submitButton: { flex: 1, padding: 14, backgroundColor: "#6C63FF", borderRadius: 8, marginLeft: 8, alignItems: "center" },
     submitText: { color: "#FFF", fontWeight: "bold" },

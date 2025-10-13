@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image, Platform, Modal } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
-import { getDatabase, ref, push } from "firebase/database";
-import MapViewLib, { Marker } from "react-native-maps";
+import { getDatabase, ref, push, get } from "firebase/database";
 import { auth } from "@/firebaseConfig";
 
 export default function CreateReturnPage() {
@@ -42,7 +41,15 @@ export default function CreateReturnPage() {
 
         try {
             const db = getDatabase();
-            await push(ref(db, "returns"), {
+
+            const reportSnapshot = await get(ref(db, `reports/${report_id}`));
+            if (!reportSnapshot.exists()) {
+                alert("Laporan tidak ditemukan");
+                return;
+            }
+            const reportData = reportSnapshot.val();
+
+            const newReturnRef = await push(ref(db, "returns"), {
                 report_id,
                 user_id: auth.currentUser.uid,
                 title,
@@ -55,6 +62,33 @@ export default function CreateReturnPage() {
                 created_at: new Date().toISOString(),
             });
 
+            const returnId = newReturnRef.key;
+
+            const returnData = {
+                id: returnId,
+                report_id,
+                user_id: auth.currentUser.uid,
+                title,
+                description,
+                location_name: locationName,
+                latitude: latitude ? parseFloat(latitude) : location?.latitude || null,
+                longitude: longitude ? parseFloat(longitude) : location?.longitude || null,
+                image_path: imagePath || null,
+                status: "FOUND",
+                created_at: new Date().toISOString(),
+            };
+
+            await push(ref(db, "notifications"), {
+                report_id,
+                return_id: returnId,
+                report: reportData,
+                return: returnData,
+                message: "Seseorang telah menemukan barang anda. cek apakah milik anda",
+                type: "RETURN",
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+            });
+
             alert("Laporan penemuan berhasil dibuat!");
             router.push("/return");
         } catch (err) {
@@ -62,6 +96,7 @@ export default function CreateReturnPage() {
             alert("Gagal membuat laporan penemuan");
         }
     };
+
 
     return (
         <>

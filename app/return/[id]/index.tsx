@@ -73,10 +73,10 @@ export default function ReturnDetail() {
             <Text style={styles.text}>{data.location_name}</Text>
             <Text style={styles.subText}>Lat: {data.latitude} | Lng: {data.longitude}</Text>
 
-            <Text style={styles.sectionLabel}>Status</Text>
-            <Text style={[styles.status, data.status && data.status !== "FOUND" ? styles.lost : styles.found]}>
-                {data.status && data.status !== "FOUND" ? "Sudah Dikonfirmasi Pemilik" : "Ditemukan"}
-            </Text>
+            {/*<Text style={styles.sectionLabel}>Status</Text>*/}
+            {/*<Text style={[styles.status, data.status && data.status !== "FOUND" ? styles.lost : styles.found]}>*/}
+            {/*    {data.status && data.status !== "FOUND" ? "Sudah Dikonfirmasi Pemilik" : "Ditemukan"}*/}
+            {/*</Text>*/}
 
             {/*<Text style={styles.sectionLabel}>Ditemukan Oleh</Text>*/}
             {/*<Text style={styles.text}>{data.user.name}</Text>*/}

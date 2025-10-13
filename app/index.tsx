@@ -11,7 +11,7 @@ export default function Index() {
                 style={styles.image}
                 resizeMode="cover"
             />
-            <View>
+            <View style={{marginTop: 20}}>
                 <Text style={styles.title}>Lapor & Temukan Barangmu</Text>
                 <Text style={styles.subtitle}>
                     Kehilangan barang? Atau menemukan barang milik orang lain? Bantu dan dibantu lewat satu aplikasi.

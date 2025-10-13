@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, ActivityIndicator, Modal } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
-import { getDatabase, ref, get, child } from "firebase/database";
+import { getDatabase, ref, get, update } from "firebase/database";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function ReportDetail() {
     const { id } = useLocalSearchParams();
+    const { user } = useAuth();
     const [report, setReport] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [updating, setUpdating] = useState(false);
 
     useEffect(() => {
         if (!id) return;
@@ -41,6 +45,24 @@ export default function ReportDetail() {
         fetchReport();
     }, [id]);
 
+    const isOwner = user?.uid === report?.user_id;
+
+    const handleFound = async () => {
+        if (!report) return;
+        setUpdating(true);
+        try {
+            const db = getDatabase();
+            await update(ref(db, `reports/${id}`), { status: "FOUND" });
+            setReport({ ...report, status: "FOUND" });
+            setModalVisible(false);
+        } catch (err) {
+            console.error("Error updating status:", err);
+            alert("Gagal mengubah status");
+        } finally {
+            setUpdating(false);
+        }
+    };
+
     if (loading) {
         return (
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -50,6 +72,29 @@ export default function ReportDetail() {
     }
 
     if (!report) return null;
+
+    let actionButton = null;
+    if (report.status === "OPEN") {
+        if (isOwner) {
+            actionButton = (
+                <TouchableOpacity
+                    style={styles.confirmButton}
+                    onPress={() => setModalVisible(true)}
+                >
+                    <Text style={styles.confirmText}>Apakah barang sudah ditemukan?</Text>
+                </TouchableOpacity>
+            );
+        } else {
+            actionButton = (
+                <TouchableOpacity
+                    style={styles.confirmButton}
+                    onPress={() => router.push(`/report/${id}/create`)}
+                >
+                    <Text style={styles.confirmText}>Apakah anda menemukan barang ini?</Text>
+                </TouchableOpacity>
+            );
+        }
+    }
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
@@ -69,11 +114,6 @@ export default function ReportDetail() {
                 {report.status && report.status !== "OPEN" ? "Sudah Ditemukan" : "Belum Ditemukan"}
             </Text>
 
-            {/*<Text style={styles.sectionLabel}>Pelapor</Text>*/}
-            {/*<Text style={styles.text}>{report.user?.name}</Text>*/}
-            {/*<Text style={styles.subText}>{report.user?.email}</Text>*/}
-            {/*<Text style={styles.subText}>{report.user?.phone_number}</Text>*/}
-
             <Text style={styles.sectionLabel}>Dilaporkan Pada</Text>
             <Text style={styles.text}>{report.created_at}</Text>
 
@@ -81,20 +121,33 @@ export default function ReportDetail() {
                 <TouchableOpacity style={styles.backButton} onPress={() => router.push("/report")}>
                     <Text style={styles.backText}>Kembali</Text>
                 </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={styles.confirmButton}
-                    onPress={() => router.push(`/report/${id}/create`)}
-                >
-                    <Text style={styles.confirmText}>Apakah Anda menemukan Barang ini?</Text>
-                </TouchableOpacity>
+                {actionButton}
             </View>
+            <Modal visible={modalVisible} transparent animationType="slide">
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Apakah anda sudah menemukan {report.title}?</Text>
+                        <Text style={styles.modalDesc}>
+                            Jika anda yakin barang ini sudah ditemukan, tekan "Ditemukan". Atau tekan "Kembali" jika belum.
+                        </Text>
+
+                        <View style={styles.modalButtons}>
+                            <TouchableOpacity style={[styles.modalButton, styles.modalBack]} onPress={() => setModalVisible(false)}>
+                                <Text style={styles.modalButtonText}>Kembali</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.modalButton, styles.modalConfirm]} onPress={handleFound} disabled={updating}>
+                                <Text style={styles.modalButtonText}>{updating ? "Memproses..." : "Ditemukan"}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: "#FFF", padding: 16 },
+    container: { flex: 1, backgroundColor: "#FFF" },
     image: { width: "100%", height: 200, borderRadius: 10, marginBottom: 16 },
     title: { fontSize: 22, fontWeight: "bold", marginBottom: 10 },
 
@@ -122,4 +175,26 @@ const styles = StyleSheet.create({
     },
     backText: { color: "#FFF", fontWeight: "bold" },
     confirmText: { color: "#FFF", fontWeight: "bold", textAlign: "center" },
+
+    // Modal styles
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: "rgba(0,0,0,0.5)",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 16,
+    },
+    modalContent: {
+        backgroundColor: "#FFF",
+        borderRadius: 10,
+        padding: 20,
+        width: "100%",
+    },
+    modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 12 },
+    modalDesc: { fontSize: 14, color: "#333", marginBottom: 20 },
+    modalButtons: { flexDirection: "row", justifyContent: "space-between" },
+    modalButton: { flex: 1, padding: 14, borderRadius: 8, alignItems: "center", marginHorizontal: 4 },
+    modalBack: { backgroundColor: "#999" },
+    modalConfirm: { backgroundColor: "#6C63FF" },
+    modalButtonText: { color: "#FFF", fontWeight: "bold" },
 });
