@@ -32,13 +32,13 @@ export default function ReportCreate() {
         status: "OPEN",
     });
 
-    // let MapView: any = null;
-    // let Marker: any = null;
-    // if (Platform.OS !== "web") {
-    //     const maps = require("react-native-maps");
-    //     MapView = maps.default;
-    //     Marker = maps.Marker;
-    // }
+    let MapView: any = null;
+    let Marker: any = null;
+    if (Platform.OS !== "web") {
+        const maps = require("react-native-maps");
+        MapView = maps.default;
+        Marker = maps.Marker;
+    }
 
     const handleChange = (key: string, value: string) => {
         setForm(prev => ({ ...prev, [key]: value }));
@@ -108,15 +108,15 @@ export default function ReportCreate() {
                 <Input label="Deskripsi" value={form.description} onChangeText={(v: any) => handleChange("description", v)} multiline />
                 <Input label="Nama Lokasi" value={form.location_name} onChangeText={(v: any) => handleChange("location_name", v)} />
 
-                {/*{Platform.OS !== "web" ? (*/}
-                {/*    <TouchableOpacity style={styles.uploadButton} onPress={() => setMapVisible(true)}>*/}
-                {/*        <Text style={styles.uploadText}>Pilih Lokasi di Peta</Text>*/}
-                {/*    </TouchableOpacity>*/}
-                {/*) : (*/}
-                {/*    <Text style={{ color: "red", marginBottom: 10 }}>*/}
-                {/*        Map tidak tersedia di web. Masukkan koordinat secara manual.*/}
-                {/*    </Text>*/}
-                {/*)}*/}
+                {Platform.OS !== "web" ? (
+                    <TouchableOpacity style={styles.uploadButton} onPress={() => setMapVisible(true)}>
+                        <Text style={styles.uploadText}>Pilih Lokasi di Peta</Text>
+                    </TouchableOpacity>
+                ) : (
+                    <Text style={{ color: "red", marginBottom: 10 }}>
+                        Map tidak tersedia di web. Masukkan koordinat secara manual.
+                    </Text>
+                )}
 
                 <Input label="Latitude" value={form.latitude} onChangeText={(v: any) => handleChange("latitude", v)} />
                 <Input label="Longitude" value={form.longitude} onChangeText={(v: any) => handleChange("longitude", v)} />
@@ -131,33 +131,33 @@ export default function ReportCreate() {
                 </View>
             </ScrollView>
 
-            {/*{MapView && (*/}
-            {/*    <Modal visible={mapVisible} animationType="slide">*/}
-            {/*        <View style={{ flex: 1 }}>*/}
-            {/*            <MapView*/}
-            {/*                style={{ flex: 1 }}*/}
-            {/*                initialRegion={{*/}
-            {/*                    latitude: location?.latitude || -6.200000,*/}
-            {/*                    longitude: location?.longitude || 106.816666,*/}
-            {/*                    latitudeDelta: 0.01,*/}
-            {/*                    longitudeDelta: 0.01,*/}
-            {/*                }}*/}
-            {/*                onPress={(e: any) => {*/}
-            {/*                    const { latitude, longitude } = e.nativeEvent.coordinate;*/}
-            {/*                    setLocation({ latitude, longitude });*/}
-            {/*                    handleChange("latitude", latitude.toString());*/}
-            {/*                    handleChange("longitude", longitude.toString());*/}
-            {/*                    setMapVisible(false);*/}
-            {/*                }}*/}
-            {/*            >*/}
-            {/*                {location && <Marker coordinate={location} />}*/}
-            {/*            </MapView>*/}
-            {/*            <TouchableOpacity style={styles.backButton} onPress={() => setMapVisible(false)}>*/}
-            {/*                <Text style={styles.backText}>Tutup Map</Text>*/}
-            {/*            </TouchableOpacity>*/}
-            {/*        </View>*/}
-            {/*    </Modal>*/}
-            {/*)}*/}
+            {MapView && (
+                <Modal visible={mapVisible} animationType="slide">
+                    <View style={{ flex: 1 }}>
+                        <MapView
+                            style={{ flex: 1 }}
+                            initialRegion={{
+                                latitude: location?.latitude || -6.200000,
+                                longitude: location?.longitude || 106.816666,
+                                latitudeDelta: 0.01,
+                                longitudeDelta: 0.01,
+                            }}
+                            onPress={(e: any) => {
+                                const { latitude, longitude } = e.nativeEvent.coordinate;
+                                setLocation({ latitude, longitude });
+                                handleChange("latitude", latitude.toString());
+                                handleChange("longitude", longitude.toString());
+                                setMapVisible(false);
+                            }}
+                        >
+                            {location && <Marker coordinate={location} />}
+                        </MapView>
+                        <TouchableOpacity style={styles.backButton} onPress={() => setMapVisible(false)}>
+                            <Text style={styles.backText}>Tutup Map</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
+            )}
         </>
     );
 }

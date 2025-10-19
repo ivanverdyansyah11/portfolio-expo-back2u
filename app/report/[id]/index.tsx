@@ -26,13 +26,8 @@ export default function ReportDetail() {
                 }
 
                 const reportData = snapshot.val();
-                let userData = null;
-                if (reportData.user_id) {
-                    const userSnap = await get(ref(db, `users/${reportData.user_id}`));
-                    userData = userSnap.exists() ? userSnap.val() : null;
-                }
 
-                setReport({ ...reportData, user: userData });
+                setReport(reportData);
             } catch (err) {
                 console.error("Error fetching report:", err);
                 alert("Gagal mengambil data laporan");
@@ -108,6 +103,11 @@ export default function ReportDetail() {
             <Text style={styles.sectionLabel}>Lokasi</Text>
             <Text style={styles.text}>{report.location_name}</Text>
             <Text style={styles.subText}>Lat: {report.latitude} | Lng: {report.longitude}</Text>
+
+            <Text style={styles.sectionLabel}>Pemilik</Text>
+            <Text style={styles.text}>Username: {report.user.name}</Text>
+            <Text style={styles.text}>Email: {report.user.email}</Text>
+            <Text style={styles.text}>Nomor Telepon: {report?.user?.phone_number?.length > 0 ? report.user.phone_number : '-'}</Text>
 
             <Text style={styles.sectionLabel}>Status</Text>
             <Text style={[styles.status, report.status && report.status !== "OPEN" ? styles.resolved : styles.open]}>

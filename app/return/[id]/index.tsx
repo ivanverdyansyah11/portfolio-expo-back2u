@@ -36,7 +36,8 @@ export default function ReturnDetail() {
                 if (snapshot.exists()) {
                     const val = snapshot.val();
                     const user: UserType = val.user || { name: "Anonim", email: "-", phone_number: "-" };
-                    setData({ ...val, id, user });
+                    setData(val);
+                    console.log(data)
                 } else {
                     alert("Data return tidak ditemukan");
                     router.back();
@@ -78,10 +79,10 @@ export default function ReturnDetail() {
             {/*    {data.status && data.status !== "FOUND" ? "Sudah Dikonfirmasi Pemilik" : "Ditemukan"}*/}
             {/*</Text>*/}
 
-            {/*<Text style={styles.sectionLabel}>Ditemukan Oleh</Text>*/}
-            {/*<Text style={styles.text}>{data.user.name}</Text>*/}
-            {/*<Text style={styles.subText}>{data.user.email}</Text>*/}
-            {/*<Text style={styles.subText}>{data.user.phone_number}</Text>*/}
+            <Text style={styles.sectionLabel}>Ditemukan Oleh</Text>
+            <Text style={styles.text}>Username: {data.user.name}</Text>
+            <Text style={styles.subText}>Email: {data.user.email}</Text>
+            <Text style={styles.subText}>Nomor Telepon: {data?.user?.phone_number?.length > 0 ? data.user.phone_number : '-'}</Text>
 
             <Text style={styles.sectionLabel}>Ditemukan Pada</Text>
             <Text style={styles.text}>{data.created_at}</Text>

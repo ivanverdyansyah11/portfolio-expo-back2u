@@ -30,11 +30,11 @@ export default function CreateReturnPage() {
     let MapView: any = null;
     let Marker: any = null;
 
-    // if (Platform.OS !== "web") {
-    //     const maps = require("react-native-maps");
-    //     MapView = maps.default;
-    //     Marker = maps.Marker;
-    // }
+    if (Platform.OS !== "web") {
+        const maps = require("react-native-maps");
+        MapView = maps.default;
+        Marker = maps.Marker;
+    }
 
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -160,33 +160,33 @@ export default function CreateReturnPage() {
                 </TouchableOpacity>
             </ScrollView>
 
-            {/*<Modal visible={mapVisible} animationType="slide">*/}
-            {/*    <View style={{ flex: 1 }}>*/}
-            {/*        {MapView && (*/}
-            {/*            <MapView*/}
-            {/*                style={{ flex: 1 }}*/}
-            {/*                initialRegion={{*/}
-            {/*                    latitude: location?.latitude || -6.200000,*/}
-            {/*                    longitude: location?.longitude || 106.816666,*/}
-            {/*                    latitudeDelta: 0.01,*/}
-            {/*                    longitudeDelta: 0.01,*/}
-            {/*                }}*/}
-            {/*                onPress={(e: any) => {*/}
-            {/*                    const { latitude, longitude } = e.nativeEvent.coordinate;*/}
-            {/*                    setLocation({ latitude, longitude });*/}
-            {/*                    setLatitude(latitude.toString());*/}
-            {/*                    setLongitude(longitude.toString());*/}
-            {/*                    setMapVisible(false);*/}
-            {/*                }}*/}
-            {/*            >*/}
-            {/*                {location && <Marker coordinate={location} />}*/}
-            {/*            </MapView>*/}
-            {/*        )}*/}
-            {/*        <TouchableOpacity style={styles.backButton} onPress={() => setMapVisible(false)}>*/}
-            {/*            <Text style={styles.backText}>Tutup Map</Text>*/}
-            {/*        </TouchableOpacity>*/}
-            {/*    </View>*/}
-            {/*</Modal>*/}
+            <Modal visible={mapVisible} animationType="slide">
+                <View style={{ flex: 1 }}>
+                    {MapView && (
+                        <MapView
+                            style={{ flex: 1 }}
+                            initialRegion={{
+                                latitude: location?.latitude || -6.200000,
+                                longitude: location?.longitude || 106.816666,
+                                latitudeDelta: 0.01,
+                                longitudeDelta: 0.01,
+                            }}
+                            onPress={(e: any) => {
+                                const { latitude, longitude } = e.nativeEvent.coordinate;
+                                setLocation({ latitude, longitude });
+                                setLatitude(latitude.toString());
+                                setLongitude(longitude.toString());
+                                setMapVisible(false);
+                            }}
+                        >
+                            {location && <Marker coordinate={location} />}
+                        </MapView>
+                    )}
+                    <TouchableOpacity style={styles.backButton} onPress={() => setMapVisible(false)}>
+                        <Text style={styles.backText}>Tutup Map</Text>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
         </>
     );
 }
