@@ -58,7 +58,7 @@ export default function ReportScreen() {
                 onChangeText={setSearch}
             />
             {filteredItems.length === 0 ? (
-                <Text style={{ textAlign: "center", marginTop: 20 }}>Tidak ada barang ditemukan</Text>
+                <Text style={{ textAlign: "center", marginTop: 20 }}>Tidak ada barang laporan ditemukan</Text>
             ) : (
                 <FlatList
                     data={filteredItems}

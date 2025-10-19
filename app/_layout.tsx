@@ -1,4 +1,4 @@
-import {StatusBar, StyleSheet, View, ActivityIndicator} from "react-native";
+import {StatusBar, StyleSheet, View, ActivityIndicator, Platform} from "react-native";
 import React, { useEffect } from "react";
 import { Slot, useRouter, usePathname } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
@@ -7,6 +7,10 @@ export default function RootLayout() {
     const { user, loading } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
+
+    if (Platform.OS === "web") {
+        require("leaflet/dist/leaflet.css");
+    }
 
     const publicPaths = ["/", "/auth/login", "/auth/register"];
 

@@ -13,7 +13,6 @@ export default function ReturnScreen() {
             .then((snapshot) => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
-                    // konversi object ke array
                     const itemArray = Object.keys(data).map(key => ({ id: key, ...data[key] }));
                     setItems(itemArray);
                 } else {
@@ -38,23 +37,27 @@ export default function ReturnScreen() {
                 value={search}
                 onChangeText={setSearch}
             />
-            <FlatList
-                data={filteredItems}
-                numColumns={2}
-                keyExtractor={(item) => item.id}
-                columnWrapperStyle={{ gap: 10 }}
-                contentContainerStyle={{ gap: 10, paddingVertical: 10 }}
-                renderItem={({ item }) => (
-                    <TouchableOpacity
-                        style={styles.card}
-                        onPress={() => router.push(`/return/${item.id}`)}
-                    >
-                        <Image source={{ uri: item.image_path }} style={styles.cardImage} />
-                        <Text style={styles.cardTitle}>{item.title}</Text>
-                        <Text style={styles.cardDesc} numberOfLines={2}>{item.description}</Text>
-                    </TouchableOpacity>
-                )}
-            />
+            {filteredItems.length === 0 ? (
+                <Text style={{ textAlign: "center", marginTop: 20 }}>Tidak ada barang ditemukan</Text>
+            ) : (
+                <FlatList
+                    data={filteredItems}
+                    numColumns={2}
+                    keyExtractor={(item) => item.id}
+                    columnWrapperStyle={{ gap: 10 }}
+                    contentContainerStyle={{ gap: 10, paddingVertical: 10 }}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            style={styles.card}
+                            onPress={() => router.push(`/return/${item.id}`)}
+                        >
+                            <Image source={{ uri: item.image_path }} style={styles.cardImage} />
+                            <Text style={styles.cardTitle}>{item.title}</Text>
+                            <Text style={styles.cardDesc} numberOfLines={2}>{item.description}</Text>
+                        </TouchableOpacity>
+                    )}
+                />
+            )}
         </ScrollView>
     );
 }

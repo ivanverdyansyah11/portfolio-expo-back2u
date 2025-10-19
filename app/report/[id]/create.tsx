@@ -4,8 +4,17 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import { getDatabase, ref, push, get } from "firebase/database";
 import { auth } from "@/firebaseConfig";
+import { useAuth } from "@/hooks/useAuth";
+
+type UserType = {
+    name: string;
+    email: string;
+    phone_number: string;
+    uid: string;
+};
 
 export default function CreateReturnPage() {
+    const { user } = useAuth();
     const { id: report_id } = useLocalSearchParams();
     const router = useRouter();
 
@@ -21,11 +30,11 @@ export default function CreateReturnPage() {
     let MapView: any = null;
     let Marker: any = null;
 
-    if (Platform.OS !== "web") {
-        const maps = require("react-native-maps");
-        MapView = maps.default;
-        Marker = maps.Marker;
-    }
+    // if (Platform.OS !== "web") {
+    //     const maps = require("react-native-maps");
+    //     MapView = maps.default;
+    //     Marker = maps.Marker;
+    // }
 
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -48,10 +57,17 @@ export default function CreateReturnPage() {
                 return;
             }
             const reportData = reportSnapshot.val();
+            const userData: UserType = {
+                name: user?.name || "User",
+                email: user?.email || "",
+                phone_number: user?.phone_number || "",
+                uid: auth.currentUser!.uid,
+            };
 
             const newReturnRef = await push(ref(db, "returns"), {
                 report_id,
                 user_id: auth.currentUser.uid,
+                user: userData,
                 title,
                 description,
                 location_name: locationName,
@@ -68,6 +84,7 @@ export default function CreateReturnPage() {
                 id: returnId,
                 report_id,
                 user_id: auth.currentUser.uid,
+                user: userData,
                 title,
                 description,
                 location_name: locationName,
@@ -83,7 +100,7 @@ export default function CreateReturnPage() {
                 return_id: returnId,
                 report: reportData,
                 return: returnData,
-                message: "Seseorang telah menemukan barang anda. cek apakah milik anda",
+                message: `${userData.name} telah menemukan barang anda. cek apakah milik anda`,
                 type: "RETURN",
                 created_at: new Date().toISOString(),
                 updated_at: new Date().toISOString(),
@@ -143,33 +160,33 @@ export default function CreateReturnPage() {
                 </TouchableOpacity>
             </ScrollView>
 
-            <Modal visible={mapVisible} animationType="slide">
-                <View style={{ flex: 1 }}>
-                    {MapView && (
-                        <MapView
-                            style={{ flex: 1 }}
-                            initialRegion={{
-                                latitude: location?.latitude || -6.200000,
-                                longitude: location?.longitude || 106.816666,
-                                latitudeDelta: 0.01,
-                                longitudeDelta: 0.01,
-                            }}
-                            onPress={(e: any) => {
-                                const { latitude, longitude } = e.nativeEvent.coordinate;
-                                setLocation({ latitude, longitude });
-                                setLatitude(latitude.toString());
-                                setLongitude(longitude.toString());
-                                setMapVisible(false);
-                            }}
-                        >
-                            {location && <Marker coordinate={location} />}
-                        </MapView>
-                    )}
-                    <TouchableOpacity style={styles.backButton} onPress={() => setMapVisible(false)}>
-                        <Text style={styles.backText}>Tutup Map</Text>
-                    </TouchableOpacity>
-                </View>
-            </Modal>
+            {/*<Modal visible={mapVisible} animationType="slide">*/}
+            {/*    <View style={{ flex: 1 }}>*/}
+            {/*        {MapView && (*/}
+            {/*            <MapView*/}
+            {/*                style={{ flex: 1 }}*/}
+            {/*                initialRegion={{*/}
+            {/*                    latitude: location?.latitude || -6.200000,*/}
+            {/*                    longitude: location?.longitude || 106.816666,*/}
+            {/*                    latitudeDelta: 0.01,*/}
+            {/*                    longitudeDelta: 0.01,*/}
+            {/*                }}*/}
+            {/*                onPress={(e: any) => {*/}
+            {/*                    const { latitude, longitude } = e.nativeEvent.coordinate;*/}
+            {/*                    setLocation({ latitude, longitude });*/}
+            {/*                    setLatitude(latitude.toString());*/}
+            {/*                    setLongitude(longitude.toString());*/}
+            {/*                    setMapVisible(false);*/}
+            {/*                }}*/}
+            {/*            >*/}
+            {/*                {location && <Marker coordinate={location} />}*/}
+            {/*            </MapView>*/}
+            {/*        )}*/}
+            {/*        <TouchableOpacity style={styles.backButton} onPress={() => setMapVisible(false)}>*/}
+            {/*            <Text style={styles.backText}>Tutup Map</Text>*/}
+            {/*        </TouchableOpacity>*/}
+            {/*    </View>*/}
+            {/*</Modal>*/}
         </>
     );
 }
