@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { useRouter } from "expo-router";
-import { auth } from "../../firebaseConfig";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { useState } from "react";
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { auth } from "../../firebaseConfig";
 
 export default function Register() {
     const router = useRouter();
@@ -27,12 +27,14 @@ export default function Register() {
             <TextInput
                 style={styles.input}
                 placeholder="Nama Lengkap"
+                placeholderTextColor="#9CA3AF"
                 value={name}
                 onChangeText={setName}
             />
             <TextInput
                 style={styles.input}
                 placeholder="Email"
+                placeholderTextColor="#9CA3AF"
                 keyboardType="email-address"
                 value={email}
                 onChangeText={setEmail}
@@ -40,6 +42,7 @@ export default function Register() {
             <TextInput
                 style={styles.input}
                 placeholder="Password"
+                placeholderTextColor="#9CA3AF"
                 secureTextEntry
                 value={password}
                 onChangeText={setPassword}

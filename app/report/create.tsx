@@ -1,12 +1,16 @@
-import { useState, useEffect } from "react";
-import {
-    View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image, Modal, Platform
-} from "react-native";
-import { useRouter } from "expo-router";
-import * as ImagePicker from "expo-image-picker";
-import { getDatabase, ref, push } from "firebase/database";
 import { auth } from "@/firebaseConfig";
 import { useAuth } from "@/hooks/useAuth";
+import * as ImagePicker from "expo-image-picker";
+import { useRouter } from "expo-router";
+import { getDatabase, push, ref } from "firebase/database";
+import { useEffect, useState } from "react";
+import {
+    Image, Modal, Platform,
+    ScrollView,
+    StyleSheet,
+    Text, TextInput, TouchableOpacity,
+    View
+} from "react-native";
 
 type UserType = {
     name: string;
@@ -104,9 +108,27 @@ export default function ReportCreate() {
                     </Text>
                 </TouchableOpacity>
 
-                <Input label="Judul Barang" value={form.title} onChangeText={(v: any) => handleChange("title", v)} />
-                <Input label="Deskripsi" value={form.description} onChangeText={(v: any) => handleChange("description", v)} multiline />
-                <Input label="Nama Lokasi" value={form.location_name} onChangeText={(v: any) => handleChange("location_name", v)} />
+                <Input
+                    label="Nama Barang"
+                    placeholder="Nama Barang"
+                    placeholderTextColor="#9CA3AF"
+                    value={form.title}
+                    onChangeText={(v: any) => handleChange("title", v)}
+                />
+                <Input
+                    label="Deskripsi"
+                    placeholder="Deskripsi"
+                    placeholderTextColor="#9CA3AF"
+                    value={form.description}
+                    onChangeText={(v: any) => handleChange("description", v)} multiline
+                />
+                <Input
+                    label="Nama Lokasi"
+                    placeholder="Nama Lokasi"
+                    placeholderTextColor="#9CA3AF"
+                    value={form.location_name}
+                    onChangeText={(v: any) => handleChange("location_name", v)}
+                />
 
                 {Platform.OS !== "web" ? (
                     <TouchableOpacity style={styles.uploadButton} onPress={() => setMapVisible(true)}>
@@ -118,8 +140,20 @@ export default function ReportCreate() {
                     </Text>
                 )}
 
-                <Input label="Latitude" value={form.latitude} onChangeText={(v: any) => handleChange("latitude", v)} />
-                <Input label="Longitude" value={form.longitude} onChangeText={(v: any) => handleChange("longitude", v)} />
+                <Input
+                    label="Latitude"
+                    placeholder="Latitude"
+                    placeholderTextColor="#9CA3AF"
+                    value={form.latitude}
+                    onChangeText={(v: any) => handleChange("latitude", v)}
+                />
+                <Input
+                    label="Longitude"
+                    placeholder="Longitude"
+                    placeholderTextColor="#9CA3AF"
+                    value={form.longitude}
+                    onChangeText={(v: any) => handleChange("longitude", v)}
+                />
 
                 <View style={styles.buttonRow}>
                     <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
